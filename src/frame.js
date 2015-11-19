@@ -9,9 +9,6 @@ var Frame = function() {
   this.knockedDownPins = [];
 };
 
-
-
-
 Frame.prototype = {
   getPins: function() {
     return this.pins;
