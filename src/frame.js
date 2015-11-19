@@ -30,5 +30,9 @@ Frame.prototype = {
   resetDefaults: function(){
     this.pins = this.MAX_PINS;
     this.knockedDownPins = [];
+  },
+
+  getMaxPins: function(){
+    return this.MAX_PINS;
   }
 };
