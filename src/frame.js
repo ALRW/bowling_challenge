@@ -9,6 +9,7 @@ var Frame = function(game) {
   this.pins = this.MAX_PINS;
   this.knockedDownPins = [];
   this.FRAME_LENGTH = 2;
+  this.TENTH_FRAME_MAX_LENGTH = 3;
 };
 
 Frame.prototype = {
@@ -17,6 +18,9 @@ Frame.prototype = {
   },
 
   reducePins: function(number){
+    if(this.pins === 0) {
+      this.pins = this.getMaxPins();
+    }
     this.pins -= number;
   },
 
@@ -25,12 +29,21 @@ Frame.prototype = {
   },
 
   setKnockedDownPins: function(number) {
+    if(this._isTenthFrame()) {
+      this.knockedDownPins.push(number);
+      this.reducePins(number);
+      if(this._isTenthFrameOver()) {
+        this._pushFrame();
+        this._resetDefaults();
+      }
+    } else {
+    this.knockedDownPins.push(number);
+    this.reducePins(number);
     if(this._isFrameOver()) {
       this._pushFrame();
       this._resetDefaults();
     }
-    this.knockedDownPins.push(number);
-    this.reducePins(number);
+   }
   },
 
   _resetDefaults: function(){
@@ -47,27 +60,24 @@ Frame.prototype = {
   },
 
   _isFrameOver: function(){
-    if(this._isTenthFrame()){
-      return this._isTenthFrameOver();
-    }
-    else {
       return (this.getKnockedDownPins()[0] === this.getMaxPins() ||
       this.getKnockedDownPins().length === this.getFrameLength());
-    }
-  },
-
-  _isTenthFrame: function(){
-    return (this.game.frameLength === 9);
-  },
-
-  _isTenthFrameOver: function(){
-    return (this.getKnockedDownPins().length === this.getFrameLength() + 1 ||
-    (this.getKnockedDownPins()[0] + this.getKnockedDownPins()[1] <
-    this.getMaxPins() && this.getKnockedDownPins().length ===
-    this.getFrameLength()));
   },
 
   _pushFrame: function() {
     this.game.storeScores(this.getKnockedDownPins());
+  },
+
+  _isTenthFrame: function() {
+    return (this.game.frameLength() === 9);
+  },
+
+  _isTenthFrameOver: function() {
+    if (this.getKnockedDownPins().length === this.TENTH_FRAME_MAX_LENGTH) {
+      return true;
+    } else if (this.getKnockedDownPins().length === this.getFrameLength() &&
+               this.knockedDownPins.reduce((a, b) => a + b) < 10) {
+                 return true;
+               }
   }
 };
