@@ -42,13 +42,29 @@ Frame.prototype = {
     return this.MAX_PINS;
   },
 
-  getFrameLength: function() {
+  getFrameLength: function(){
     return this.FRAME_LENGTH;
   },
 
-  _isFrameOver: function() {
-    return (this.getKnockedDownPins()[0] === this.getMaxPins() ||
-    this.getKnockedDownPins().length === this.getFrameLength());
+  _isFrameOver: function(){
+    if(this._isTenthFrame()){
+      return this._isTenthFrameOver();
+    }
+    else {
+      return (this.getKnockedDownPins()[0] === this.getMaxPins() ||
+      this.getKnockedDownPins().length === this.getFrameLength());
+    }
+  },
+
+  _isTenthFrame: function(){
+    return (this.game.frameLength === 9);
+  },
+
+  _isTenthFrameOver: function(){
+    return (this.getKnockedDownPins().length === this.getFrameLength() + 1 ||
+    (this.getKnockedDownPins()[0] + this.getKnockedDownPins()[1] <
+    this.getMaxPins() && this.getKnockedDownPins().length ===
+    this.getFrameLength()));
   },
 
   _pushFrame: function() {

@@ -30,15 +30,23 @@ describe("Game:", function() {
     it("can calculate a bonus score when a player throws a spare", function(){
       game.storeScores(frameScore4);
       game.storeScores(frameScore5);
-      game.calculateBonusScore();
+      // game.calculateBonusScore();
       expect(game.getBonusScores()).toEqual([1]);
     });
     it("can calculate a bonus score when a player throws a strike", function(){
       game.storeScores(frameScore6);
       game.storeScores(frameScore5);
-      game.calculateBonusScore();
+      // game.calculateBonusScore();
       expect(game.getBonusScores()).toEqual([5]);
-
+    });
+    it("calculates the total score when called", function() {
+      game.storeScores(frameScore1);
+      game.storeScores(frameScore2);
+      game.storeScores(frameScore3);
+      game.storeScores(frameScore4);
+      game.storeScores(frameScore5);
+      game.storeScores(frameScore6);
+      expect(game.calculateTotalScore()).toEqual(43);
     });
   });
 

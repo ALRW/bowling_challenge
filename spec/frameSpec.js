@@ -6,7 +6,10 @@ describe("Frame:", function() {
 
   beforeEach(function() {
     game = {
-      storeScores: function() {}
+      storeScores: function() {},
+      frameLength: function() {
+        return 9;
+      }
     };
     frame = new Frame(game);
     randomNumber = 5;
