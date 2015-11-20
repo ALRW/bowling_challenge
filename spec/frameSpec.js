@@ -2,9 +2,13 @@ describe("Frame:", function() {
   var frame;
   var player;
   var randomNumber;
+  var game;
 
   beforeEach(function() {
-    frame = new Frame();
+    game = {
+      storeScores: function() {}
+    };
+    frame = new Frame(game);
     randomNumber = 5;
   });
 
@@ -13,7 +17,7 @@ describe("Frame:", function() {
       expect(frame.getPins()).toEqual(10);
     });
     it("can store knocked down pins", function() {
-      expect(frame.knockedDownPins).toEqual([]);
+      expect(frame.getKnockedDownPins()).toEqual([]);
     });
   });
 
@@ -29,13 +33,29 @@ describe("Frame:", function() {
     it("records a whole frame", function(){
       frame.setKnockedDownPins(randomNumber);
       frame.setKnockedDownPins(randomNumber);
-      expect(frame.knockedDownPins).toEqual([5,5]);
+      expect(frame.getKnockedDownPins()).toEqual([5,5]);
       expect(frame.pins).toEqual(0);
     });
     it("can reset", function(){
-      frame.resetDefaults();
+      frame._resetDefaults();
       expect(frame.pins).toEqual(frame.MAX_PINS);
-      expect(frame.knockedDownPins).toEqual([]);
+      expect(frame.getKnockedDownPins()).toEqual([]);
+    });
+  });
+
+  describe("end of frame", function() {
+    beforeEach(function() {
+      spyOn(game, "storeScores");
+      for(var i = 0; i < 3; i++) {
+        frame.setKnockedDownPins(randomNumber);
+      }
+    });
+
+    it("finishes after a player has rolled twice, without achieving a strike", function() {
+      expect(frame.getKnockedDownPins()).toEqual([5]);
+    });
+    it("sends scores to the Game object", function() {
+      expect(game.storeScores).toHaveBeenCalled();
     });
   });
 });
