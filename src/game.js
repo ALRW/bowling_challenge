@@ -1,37 +1,53 @@
-// (function () {
-//    'use strict';
-// }());
-//
-// var frame;
-//
-// function Game (player) {
-//   this.player = player || new Player(frame);
-//   this.frames = [];
-//   frame = this.player.frame;
-//   this.FRAME_LENGTH = 2;
-// }
-//
-// Game.prototype = {
-//
-//   newFrame: function() {
-//     if(this.frames.length === 9) {
-//     }
-//     else if(this._isFrameOver) {
-//       this._storeFrame();
-//       frame.resetDefaults();
-//   }},
-//
-//   getFrames: function() {
-//     return this.frames;
-//   },
-//
-//   _storeFrame: function() {
-//     this.frames.push(frame.getKnockedDownPins());
-//   },
-//
-//   _isFrameOver: function() {
-//     return (frame.getKnockedDownPins()[0] === frame.getMaxPins() ||
-//     frame.getKnockedDownPins().length === this.FRAME_LENGTH);
-//   }
-//
-// };
+(function () {
+   'use strict';
+}());
+
+var frames;
+var length;
+var bonusScores;
+
+function Game (player) {
+  this.frames = [];
+  this.bonusScores = [];
+}
+
+Game.prototype = {
+  getFrames: function(){
+    return this.frames;
+  },
+  storeScores: function(array){
+    this.frames.push(array);
+  },
+  runningScore: function(){
+    var flattened = [].concat.apply([],this.frames);
+    return flattened.reduce(function(a,b) {return a + b;});
+  },
+
+  _frameLength: function(){
+    return this.frames.length;
+  },
+
+  calculateBonusScore: function(){
+      if (this._isStrike()) {
+        this.bonusScores.push(this.frames[this._frameLength() -1][0] + this.frames[this._frameLength() -1][1]);
+      }
+      else if (this._isSpare()){
+        this.bonusScores.push(this.frames[this._frameLength() - 1][0]);
+      }
+  },
+
+  getBonusScores: function(){
+    return this.bonusScores;
+  },
+
+  _isSpare: function(){
+    return (this.frames[this._frameLength() - 2][0] +
+      this.frames[this._frameLength() - 2][1] === 10);
+  },
+
+  _isStrike: function(){
+    return (this.frames[this._frameLength() - 2][0] === 10);
+  }
+
+
+};
