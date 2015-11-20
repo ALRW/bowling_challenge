@@ -16,9 +16,11 @@ Game.prototype = {
     return this.frames;
   },
   storeScores: function(array){
-    this.frames.push(array);
-    if(this.getFrames().length > 1){
-      this.calculateBonusScore();}
+    if(this.frameLength() < 10) {
+      this.frames.push(array);
+      if(this.getFrames().length > 1){
+        this.calculateBonusScore();}
+    }
   },
   runningScore: function(){
     var flattened = [].concat.apply([],this.frames);
